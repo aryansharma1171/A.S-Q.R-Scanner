@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A.S QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body {
+      background-color: #0b0f1a;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #00ffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 2em;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    }
+
+    #qr-reader {
+      width: 300px;
+      margin: 20px auto;
+      display: none;
+    }
+
+    #result {
+      margin-top: 20px;
+      background-color: #101928;
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 10px #00ffff;
+      word-wrap: break-word;
+    }
+
+    .btn {
+      background-color: transparent;
+      border: 2px solid #00ffff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: #00ffff;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    .btn:hover {
+      background-color: #00ffff;
+      color: #0b0f1a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔷 A.S QR Scanner</h1>
+
+  <button class="btn" onclick="startScanning()">📡 Start Scanning</button>
+  <div id="qr-reader"></div>
+
+  <div id="result">Result will appear here</div>
+
+  <button class="btn" onclick="copyResult()">📋 Copy Result</button>
+
+  <script>
+    let scanner;
+
+    function startScanning() {
+      document.getElementById("qr-reader").style.display = "block";
+
+      scanner = new Html5Qrcode("qr-reader");
+
+      scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250,
+        },
+        (decodedText) => {
+          document.getElementById("result").innerText = decodedText;
+          scanner.stop().then(() => {
+            document.getElementById("qr-reader").style.display = "none";
+          });
+        },
+        (error) => {
+          // Silent fail
+        }
+      ).catch((err) => {
+        alert("Camera Error: " + err);
+      });
+    }
+
+    function copyResult() {
+      const resultText = document.getElementById("result").innerText;
+      navigator.clipboard.writeText(resultText).then(() => {
+        alert("Copied!");
+      });
+    }
+  </script>
+
+</body>
+</html>
